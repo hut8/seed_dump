@@ -20,6 +20,9 @@ class SeedDump
 
       append = (env['APPEND'] == 'true')
 
+      skip_callbacks = (env['SKIP_CALLBACKS'] == 'true')
+      skip_validations = (env['SKIP_VALIDATIONS'] == 'true')
+
       models.each do |model|
         model = model.limit(env['LIMIT'].to_i) if env['LIMIT']
 
@@ -28,11 +31,12 @@ class SeedDump
                       batch_size: (env['BATCH_SIZE'] ? env['BATCH_SIZE'].to_i : nil),
                       exclude: (env['EXCLUDE'] ? env['EXCLUDE'].split(',').map {|e| e.strip.to_sym} : nil),
                       file: (env['FILE'] || 'db/seeds.rb'),
-                      import: (env['IMPORT'] == 'true'))
+                      import: (env['IMPORT'] == 'true'),
+                      skip_callbacks: skip_callbacks,
+                      skip_validations: skip_validations)
 
         append = true
       end
     end
   end
 end
-

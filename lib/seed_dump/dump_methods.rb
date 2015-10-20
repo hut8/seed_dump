@@ -68,6 +68,17 @@ class SeedDump
     def write_records_to_io(records, io, options)
       options[:exclude] ||= [:id, :created_at, :updated_at]
 
+      if options[:skip_callbacks]
+        io.write("#{model_for(records)}.reset_callbacks :save\n")
+        io.write("#{model_for(records)}.reset_callbacks :create\n")
+        puts "Callbacks are disabled." if options[:verbose]
+      end
+
+      if options[:skip_validations]
+        io.write("#{model_for(records)}.reset_callbacks :validate\n")
+        puts "Validations are disabled." if options[:verbose]
+      end
+
       method = options[:import] ? 'import' : 'create!'
       io.write("#{model_for(records)}.#{method}(")
       if options[:import]
